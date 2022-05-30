@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:opensea_dart/pojo/assets_object.dart';
+import 'package:stashi/models/portfolio_asset.dart';
 import 'package:stashi/utils.dart';
+import 'package:path/path.dart' as p;
 
 class AssetsView extends StatefulWidget {
-  final List<Assets> assets;
+  final List<PortfolioAsset> assets;
 
   @override
   _AssetsViewState createState() => _AssetsViewState();
@@ -22,43 +23,40 @@ class _AssetsViewState extends State<AssetsView> {
     );
   }
 
-  Widget buildAssetGrid(List<Assets> assets) {
+  Widget buildAssetGrid(List<PortfolioAsset> assets) {
+    var visibleAssets = assets.where((e) => !e.isHidden).toList();
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
         maxCrossAxisExtent: 200,
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
       ),
-      itemCount: assets.length,
+      itemCount: visibleAssets.length,
       itemBuilder: (context, index) {
-        var asset = assets[index];
+        var asset = visibleAssets[index];
         return Container(
           constraints: const BoxConstraints(minWidth: 200, maxWidth: 500),
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.all(Radius.circular(8.0)),
             image: DecorationImage(
               fit: BoxFit.cover,
-              image: NetworkImage(asset.imagePreviewUrl ?? 'image'),
+              image: imageForUrl(asset.imageUrl),
             ),
           ),
           child: InkWell(
             onTap: () => openUrl(asset.permalink!),
           ),
         );
-        // return InkWell(
-        //   onTap: () => openUrl(asset.permalink!),
-        //   child: Container(
-        //     constraints: const BoxConstraints(minWidth: 200, maxWidth: 500),
-        //     decoration: BoxDecoration(
-        //       borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-        //       image: DecorationImage(
-        //         fit: BoxFit.cover,
-        //         image: NetworkImage(asset.imagePreviewUrl ?? 'image'),
-        //       ),
-        //     ),
-        //   )
-        // );
       },
     );
+  }
+
+  ImageProvider imageForUrl(String? url) {
+    const defaultImage = AssetImage('assets/graphics/No-Image-Placeholder.png');
+
+    if (url == null || '.svg' == p.extension(url)) {
+      return defaultImage;
+    }
+    return NetworkImage(url);
   }
 }

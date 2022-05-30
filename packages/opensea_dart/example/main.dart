@@ -47,7 +47,9 @@ void main() async {
   await Future.delayed(const Duration(seconds: 5));
 
   ///getCollection
-  openSea.getCollection("copypasteearth").then((value) => print(value));
+  openSea
+      .getCollection('copypasteearth', slug: "copypasteearth")
+      .then((value) => print(value));
   await Future.delayed(const Duration(seconds: 5));
 
   ///getAssets
@@ -56,7 +58,6 @@ void main() async {
           orderBy: OrderBy.saleDate,
           orderDirection: OrderDirection.asc,
           limit: "1",
-          offset: "0",
           collection: "doodles-official")
       .then((value) => print(value));
 }

@@ -4,7 +4,9 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   final openSea = OpenSea(null);
   test("getting a single collection", () {
-    openSea.getCollection("copypasteearth").then((value) {
+    openSea
+        .getCollection('copypasteearth', slug: "copypasteearth")
+        .then((value) {
       expect(() => value.collection != null, throwsAssertionError);
     });
   });

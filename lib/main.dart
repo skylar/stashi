@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:stashi/models/account.dart';
 import 'package:stashi/models/open_sea_datastore.dart';
 import 'package:stashi/screens/favorites_screen.dart';
+import 'package:stashi/screens/gallery_screen.dart';
 import 'package:stashi/screens/portfolio_screen.dart';
 import 'package:stashi/screens/settings_screen.dart';
 import 'package:stashi/screens/watchlist_screen.dart';
@@ -58,13 +59,14 @@ class _StashiAppScreensState extends ConsumerState<StashiAppScreens> {
     _menuWidgets = [
       WatchlistScreen(account: _account),
       PortfolioScreen(account: _account),
-      FavoritesScreen(account: _account),
+      GalleryScreen(account: _account),
       SettingsScreen(account: _account),
     ];
 
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        centerTitle: false,
         actions: <Widget>[
           Padding(
               padding: const EdgeInsets.only(right: 20.0),
@@ -92,12 +94,12 @@ class _StashiAppScreensState extends ConsumerState<StashiAppScreens> {
           label: 'Watchlist',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'My Things',
+          icon: Icon(Icons.wallet),
+          label: 'My Portfolio',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.favorite_outline),
-          label: 'Favorites',
+          icon: Icon(Icons.photo),
+          label: 'My Gallery',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.settings),
