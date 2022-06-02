@@ -23,7 +23,6 @@ class OpenSeaDatastore {
     return _openSea.getCollection(slug, slug: slug).then((value) {
       var collection = value.collection;
       if (collection != null) {
-        debugPrint('$slug has floor of ${collection.stats!.floorPrice}');
         _collections[slug] = collection;
       } else {
         debugPrint('No collection data for $slug.');
@@ -34,7 +33,9 @@ class OpenSeaDatastore {
 
   Future<List<String>> loadPortfolio(String address) {
     // load assets and related collections
-    return Future.wait([_loadPortfolioAssets(address)]).then((value) {
+    return Future.wait(
+            [_loadPortfolioAssets(address), _loadPortfolioCollections(address)])
+        .then((value) {
       return value[0];
     });
   }
@@ -48,8 +49,6 @@ class OpenSeaDatastore {
         for (var asset in assets) {
           var id = asset.id;
           if (id != null) {
-            // debugPrint(
-            //     'Collection for $id: ${asset.collection?.name}, ${asset.collection?.hidden}');
             ids.add(id);
             _assets[id] = asset;
           }
@@ -62,20 +61,25 @@ class OpenSeaDatastore {
     });
   }
 
-  Future<void> _loadPortfolioCollections(String address) {
+  Future<List<String>> _loadPortfolioCollections(String address) {
     return _openSea
         .getCollections(assetOwner: address, limit: '50')
         .then((value) {
       var collections = value.collections;
+      var slugs = <String>[];
       if (collections != null && collections.isNotEmpty) {
         debugPrint('${collections.length} unique collections in portfolio.');
         for (var collection in collections) {
           var slug = collection.slug;
           if (slug != null) {
-            _collections[slug] = collection;
+            if (!_collections.containsKey(slug)) {
+              _collections[slug] = collection;
+            }
+            slugs.add(slug);
           }
         }
       }
+      return slugs;
     });
   }
 }

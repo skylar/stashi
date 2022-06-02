@@ -39,7 +39,7 @@ class PortfolioScreen extends ConsumerWidget {
                 color: Colors.black87,
               ),
               Text(
-                pvalue.toString(),
+                pvalue.toStringAsFixed(3),
                 style: _digitsFont,
               )
             ],
