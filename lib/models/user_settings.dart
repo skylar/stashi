@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const _kWalletAddressPref = 'walletAddressEthereum';
@@ -24,12 +24,10 @@ class UserSettings {
     'moonbirds-oddities',
     'okay-bears',
     'mutant-ape-yacht-club',
-    'the-dooplicator',
     'azuki',
     'meebits',
     'boredapeyachtclub',
-    'premint-collector',
-  ];  // slugs
+  ]; // slugs
   final _favs = <String>[];
   SharedPreferences? _sharedPreferences;
 
@@ -45,11 +43,12 @@ class UserSettings {
   UserSettings(this._ref);
 
   Future<void> initialize() {
-      return SharedPreferences.getInstance().then((SharedPreferences sp) {
-        _sharedPreferences = sp;
-        _walletAddress = _sharedPreferences?.getString(_kWalletAddressPref) ?? _walletAddress;
-        debugPrint('user settings ready.');
-        _ref.read(settingsStateProvider.notifier).state = SettingsState.ready;
-      });
+    return SharedPreferences.getInstance().then((SharedPreferences sp) {
+      _sharedPreferences = sp;
+      _walletAddress =
+          _sharedPreferences?.getString(_kWalletAddressPref) ?? _walletAddress;
+      debugPrint('user settings ready.');
+      _ref.read(settingsStateProvider.notifier).state = SettingsState.ready;
+    });
   }
 }

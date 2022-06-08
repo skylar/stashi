@@ -99,6 +99,8 @@ class Collection {
   String? instagramUsername;
   String? wikiUrl;
 
+  double get safeFloorPrice => stats?.floorPrice ?? 0.0;
+
   Collection(
       {this.editors,
       this.paymentTokens,

@@ -35,11 +35,23 @@ class Account {
 
       return ids.map((id) {
         var asset = _ds.assetById(id);
-        var collection = _ds.collectionBySlug(asset?.collection?.slug ?? '');
-        debugPrint(
-            'Collection ${collection?.name}: ${collection?.stats?.floorPrice} ${collection?.stats?.totalSales}');
+        var slug = asset?.collection?.slug ?? '';
+        var collection = _ds.collectionBySlug(slug);
+        // debugPrint(
+        //     'Collection ${collection?.name}: ${collection?.stats?.floorPrice} ${collection?.stats?.totalSales}');
 
         return PortfolioAsset(asset!, collection);
+      });
+    });
+    portfolioCollectionsProvider =
+        Provider<Iterable<collection.Collection>>((ref) {
+      final assets = ref.watch(portfolioAssetsProvider);
+      final slugs = assets
+          .where((a) => a.collection != null)
+          .map((a) => a.collection!.slug)
+          .toSet();
+      return slugs.map((slug) {
+        return _ds.collectionBySlug(slug)!;
       });
     });
   }
@@ -53,6 +65,7 @@ class Account {
 
   final portfolioIdsProvider = StateProvider<List<String>>((ref) => []);
   late Provider<Iterable<PortfolioAsset>> portfolioAssetsProvider;
+  late Provider<Iterable<collection.Collection>> portfolioCollectionsProvider;
   final watchlistProvider =
       StateProvider<List<collection.Collection>>((ref) => []);
 

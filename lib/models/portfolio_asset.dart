@@ -13,5 +13,6 @@ class PortfolioAsset {
   get isHidden =>
       (_asset.collection?.hidden ?? false) ||
       (_collection?.stats?.totalSales ?? 0) <= 0;
-  double get floor => _collection?.stats?.floorPrice ?? 0.0;
+  double get floor => _collection?.safeFloorPrice ?? 0.0;
+  get collection => _collection;
 }

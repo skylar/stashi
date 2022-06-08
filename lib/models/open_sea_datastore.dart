@@ -23,7 +23,6 @@ class OpenSeaDatastore {
     return _openSea.getCollection(slug, slug: slug).then((value) {
       var collection = value.collection;
       if (collection != null) {
-        debugPrint('$slug has floor of ${collection.stats!.floorPrice}');
         _collections[slug] = collection;
       } else {
         debugPrint('No collection data for $slug.');
@@ -34,12 +33,16 @@ class OpenSeaDatastore {
 
   Future<List<String>> loadPortfolio(String address) {
     // load assets and related collections
-    return Future.wait([_loadPortfolioAssets(address)]).then((value) {
-      return value[0];
+    return _loadPortfolioAssets(address).then((assets) {
+      return Future.wait(assets.map((a) => loadCollection(a.collection!.slug!)))
+          .then((collection) {
+        debugPrint("loaded ${collection.length} collections for portfolio.");
+        return assets.map((asset) => asset.id!).toList();
+      });
     });
   }
 
-  Future<List<String>> _loadPortfolioAssets(String address) {
+  Future<List<osa.Assets>> _loadPortfolioAssets(String address) {
     return _openSea.getAssets(owner: address, limit: '50').then((value) {
       var assets = value.assets;
       if (assets != null && assets.isNotEmpty) {
@@ -54,7 +57,7 @@ class OpenSeaDatastore {
             _assets[id] = asset;
           }
         }
-        return ids;
+        return assets;
       } else {
         debugPrint('No data in collection.');
         return [];
@@ -62,20 +65,20 @@ class OpenSeaDatastore {
     });
   }
 
-  Future<void> _loadPortfolioCollections(String address) {
-    return _openSea
-        .getCollections(assetOwner: address, limit: '50')
-        .then((value) {
-      var collections = value.collections;
-      if (collections != null && collections.isNotEmpty) {
-        debugPrint('${collections.length} unique collections in portfolio.');
-        for (var collection in collections) {
-          var slug = collection.slug;
-          if (slug != null) {
-            _collections[slug] = collection;
-          }
-        }
-      }
-    });
-  }
+  // Future<void> _loadPortfolioCollections(String address) {
+  //   return _openSea
+  //       .getCollections(assetOwner: address, limit: '50')
+  //       .then((value) {
+  //     var collections = value.collections;
+  //     if (collections != null && collections.isNotEmpty) {
+  //       debugPrint('${collections.length} unique collections in portfolio.');
+  //       for (var collection in collections) {
+  //         var slug = collection.slug;
+  //         if (slug != null) {
+  //           _collections[slug] = collection;
+  //         }
+  //       }
+  //     }
+  //   });
+  // }
 }

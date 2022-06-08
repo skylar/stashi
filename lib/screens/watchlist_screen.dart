@@ -1,21 +1,21 @@
-import 'package:crypto_font_icons/crypto_font_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:opensea_dart/pojo/collection_object.dart' as collection;
-import 'package:intl/intl.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:stashi/models/account.dart';
 import 'package:stashi/utils.dart';
+import 'package:stashi/widgets/collection_item_view.dart';
 
 class WatchlistScreen extends ConsumerWidget {
   final Account account;
 
-  WatchlistScreen({Key? key, required this.account}) : super(key: key);
+  const WatchlistScreen({Key? key, required this.account}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     var watchlistState = ref.watch(watchlistStateProvider);
     var watchlist = ref.watch(account.watchlistProvider);
+
+    watchlist.sort((a, b) => b.safeFloorPrice.compareTo(a.safeFloorPrice));
 
     if (watchlistState == DatasetState.none) {
       return buildPlaceholder("Add collections to watch.");
@@ -30,7 +30,7 @@ class WatchlistScreen extends ConsumerWidget {
               if (index.isOdd) return const Divider();
 
               var collection = watchlist[index ~/ 2];
-              return buildStatsView(collection);
+              return CollectionItemView(col: collection);
             }),
         onRefresh: () {
           return account.refreshData();
@@ -48,34 +48,6 @@ class WatchlistScreen extends ConsumerWidget {
       trailing: Text(
         '--',
         style: TextStyle(fontSize: 18),
-      ),
-    );
-  }
-
-  final _decimalFormater = NumberFormat('0.###');
-  Widget buildStatsView(collection.Collection c) {
-    String name = c.name == null ? '(unnamed)' : c.name!;
-    return ListTile(
-      onTap: () => openUrl('https://opensea.io/collection/${c.slug!}'),
-      leading: CircleAvatar(
-        backgroundImage: NetworkImage(c.imageUrl!),
-      ),
-      title: Text(
-        name,
-        style: const TextStyle(fontSize: 14),
-      ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(
-            CryptoFontIcons.ETH,
-            size: 14,
-          ),
-          Text(
-            _decimalFormater.format(c.stats?.floorPrice),
-            style: const TextStyle(fontSize: 18),
-          ),
-        ],
       ),
     );
   }
