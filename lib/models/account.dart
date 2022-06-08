@@ -35,11 +35,7 @@ class Account {
 
       return ids.map((id) {
         var asset = _ds.assetById(id);
-        var slug = asset?.collection?.slug ?? '';
-        var collection = _ds.collectionBySlug(slug);
-        // debugPrint(
-        //     'Collection ${collection?.name}: ${collection?.stats?.floorPrice} ${collection?.stats?.totalSales}');
-
+        var collection = _ds.collectionBySlug(asset?.collection?.slug ?? '');
         return PortfolioAsset(asset!, collection);
       });
     });

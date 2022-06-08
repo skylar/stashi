@@ -51,8 +51,6 @@ class OpenSeaDatastore {
         for (var asset in assets) {
           var id = asset.id;
           if (id != null) {
-            // debugPrint(
-            //     'Collection for $id: ${asset.collection?.name}, ${asset.collection?.hidden}');
             ids.add(id);
             _assets[id] = asset;
           }
