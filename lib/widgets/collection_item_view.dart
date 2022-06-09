@@ -34,7 +34,7 @@ class CollectionItemView extends ConsumerWidget {
             size: 14,
           ),
           Text(
-            decimalFormatter.format(col.stats?.floorPrice),
+            decimalFormatter.format(col.safeFloorPrice),
             style: const TextStyle(fontSize: 18),
           ),
         ],

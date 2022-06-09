@@ -7,12 +7,12 @@ class AssetsView extends StatefulWidget {
   final List<PortfolioAsset> assets;
 
   @override
-  _AssetsViewState createState() => _AssetsViewState();
+  AssetsViewState createState() => AssetsViewState();
 
   const AssetsView({Key? key, required this.assets}) : super(key: key);
 }
 
-class _AssetsViewState extends State<AssetsView> {
+class AssetsViewState extends State<AssetsView> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -34,17 +34,27 @@ class _AssetsViewState extends State<AssetsView> {
       itemCount: visibleAssets.length,
       itemBuilder: (context, index) {
         var asset = visibleAssets[index];
-        return Container(
-          constraints: const BoxConstraints(minWidth: 200, maxWidth: 500),
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-            image: DecorationImage(
-              fit: BoxFit.cover,
-              image: imageForUrl(asset.imageUrl),
+        return InkWell(
+          onTap: () => openUrl(asset.permalink!),
+          child: Container(
+            alignment: Alignment.bottomRight,
+            constraints: const BoxConstraints(minWidth: 200, maxWidth: 500),
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                image: imageForUrl(asset.imageUrl),
+              ),
             ),
-          ),
-          child: InkWell(
-            onTap: () => openUrl(asset.permalink!),
+            child: Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Text(
+                asset.abbrTokenId,
+                textAlign: TextAlign.right,
+                style: const TextStyle(
+                    color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+            ),
           ),
         );
       },

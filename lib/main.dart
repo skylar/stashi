@@ -3,7 +3,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:stashi/models/account.dart';
 import 'package:stashi/models/open_sea_datastore.dart';
-import 'package:stashi/screens/favorites_screen.dart';
 import 'package:stashi/screens/gallery_screen.dart';
 import 'package:stashi/screens/portfolio_screen.dart';
 import 'package:stashi/screens/settings_screen.dart';
@@ -70,15 +69,17 @@ class _StashiAppScreensState extends ConsumerState<StashiAppScreens> {
         actions: <Widget>[
           Padding(
               padding: const EdgeInsets.only(right: 20.0),
-              child: GestureDetector(
-                onTap: () {
-                  _account.refreshData();
-                },
-                child: const Icon(
-                  Icons.refresh,
-                  size: 26.0,
-                ),
-              )),
+              child: InkWell(
+                  onTap: () {
+                    _account.refreshData();
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.all(12.0),
+                    child: Icon(
+                      Icons.refresh,
+                      size: 26.0,
+                    ),
+                  ))),
         ],
       ),
       body: _menuWidgets.elementAt(_selectedIndex),

@@ -18,7 +18,7 @@ class PortfolioScreen extends ConsumerWidget {
     final portfolioAssets = ref.watch(account.portfolioAssetsProvider).toList();
     final collections = ref
         .watch(account.portfolioCollectionsProvider)
-        .where((c) => c.stats?.floorPrice != null && c.safeFloorPrice > 0.0)
+        .where((c) => c.safeTotalSales > 0.0)
         .toList();
     if (portfolioAssets.isEmpty) {
       return buildPlaceholder("Your collection is empty.");
@@ -35,14 +35,18 @@ class PortfolioScreen extends ConsumerWidget {
         child: Column(children: [
       buildPortfolioSummary(pvalue),
       Expanded(
+          child: RefreshIndicator(
         child: ListView.builder(
-//              physics: const AlwaysScrollableScrollPhysics(),
+            physics: const AlwaysScrollableScrollPhysics(),
             itemCount: (collections.length * 2) - 1,
             itemBuilder: (BuildContext context, int index) {
               if (index.isOdd) return const Divider();
               return CollectionItemView(col: collections[index ~/ 2]);
             }),
-      )
+        onRefresh: () {
+          return account.refreshData();
+        },
+      ))
     ]));
   }
 

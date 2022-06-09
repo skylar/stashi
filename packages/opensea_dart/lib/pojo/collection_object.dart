@@ -99,6 +99,7 @@ class Collection {
   String? instagramUsername;
   String? wikiUrl;
 
+  double get safeTotalSales => stats?.totalSales ?? 0.0;
   double get safeFloorPrice => stats?.floorPrice ?? 0.0;
 
   Collection(

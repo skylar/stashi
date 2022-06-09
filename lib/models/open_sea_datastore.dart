@@ -34,9 +34,20 @@ class OpenSeaDatastore {
   Future<List<String>> loadPortfolio(String address) {
     // load assets and related collections
     return _loadPortfolioAssets(address).then((assets) {
-      return Future.wait(assets.map((a) => loadCollection(a.collection!.slug!)))
+      final collectionsMap = {};
+      for (var a in assets) {
+        final c = a.collection;
+        if (c != null && c.slug != null) {
+          collectionsMap[c.slug] = c;
+        } else {
+          debugPrint('Asset ${a.id} has an invalid collection.');
+        }
+      }
+      return Future.wait(
+              collectionsMap.values.map((c) => loadCollection(c.slug!)))
           .then((collection) {
-        debugPrint("loaded ${collection.length} collections for portfolio.");
+        debugPrint(
+            "loaded ${collection.length} collections for the portfolio.");
         return assets.map((asset) => asset.id!).toList();
       });
     });
@@ -49,6 +60,9 @@ class OpenSeaDatastore {
         debugPrint('${assets.length} assets in collection.');
         var ids = <String>[];
         for (var asset in assets) {
+          final a = asset;
+          // debugPrint(
+          //     '${a.id}: ${a.name} ${a.tokenId} ${a.collection?.name} ${a.collection?.slug}');
           var id = asset.id;
           if (id != null) {
             ids.add(id);
